@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const Auction = require("../models/auction");
 const Bid = require("../models/bid");
+const {broadcastToAuctionRoom} = require('../services/websocketService')
 
 exports.getAllAuctions = async (req, res) => {
   try {
@@ -46,6 +47,14 @@ exports.endAuction = async (req, res) => {
   try {
     await Auction.endAuction(auctionId);
     const highestBid = await Bid.getHighestBid(auctionId);
+
+    broadcastToAuctionRoom(
+      auctionId,
+      JSON.stringify({
+        type: "auctionEnd",
+        winningBid: highestBid?.bid_amount || 0,
+      })
+    );
 
     res.status(200).json({
       message: "Auction ended successfully",

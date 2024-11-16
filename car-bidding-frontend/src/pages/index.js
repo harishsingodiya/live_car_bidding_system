@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { createAuction, getAuctions } from "../utils/api";
 import CarImg from "../assets/car.jpg";
@@ -9,7 +10,8 @@ import NoData from "../assets/no-data.jpg";
 import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
-  const {checkAndRefreshToken} = useAuth()
+  const router = useRouter();
+  const { checkAndRefreshToken } = useAuth();
   const [auctions, setAuctions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,6 +39,11 @@ export default function Home() {
     } catch (error) {
       console.error("Failed to create auctions", error);
     }
+  };
+
+  const handleStartAuction = (auctionId) => {
+    localStorage.setItem("auctionId", auctionId);
+    router.push(`/auction/${auctionId}`);
   };
 
   const handleClosePopUp = () => {
@@ -120,7 +127,11 @@ export default function Home() {
                     isStarted(auction.start_time) &&
                     !isExpired(auction.end_time) ? (
                       <div className="px-6 pt-4 pb-2">
-                        <a key={auction.id} href={`/auction/${auction.id}`}>
+                        <a
+                          key={auction.id}
+                          href="#"
+                          onClick={() => handleStartAuction(auction.id)}
+                        >
                           <button className="flex w-full justify-center bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Start Auction
                           </button>

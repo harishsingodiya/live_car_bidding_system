@@ -34,8 +34,6 @@ const AuctionPage = () => {
       await endAuction(auctionId);
       setTimeRemaining("Auction ended");
       fetchAuction(auctionId);
-      setIsConfettiShow(true);
-      setIsOpenPopUp(true);
     } catch (error) {
       console.error("Error ending auction:", error);
     }
@@ -64,7 +62,8 @@ const AuctionPage = () => {
 
   useEffect(() => {
     if (auctionId) {
-      fetchAuction(auctionId);
+      localStorage.setItem("auctionId", auctionId)
+      fetchAuction(auctionId);      
     }
   }, [auctionId]);
 
@@ -98,6 +97,13 @@ const AuctionPage = () => {
 
     return () => clearInterval(interval);
   }, [auction]);
+
+  useEffect(() => {
+    if (messages?.length > 0) {
+      setIsConfettiShow(true);
+      setIsOpenPopUp(true);
+    }
+  }, [messages]);
 
   return (
     <>

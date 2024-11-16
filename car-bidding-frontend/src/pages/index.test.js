@@ -8,6 +8,21 @@ jest.mock("../utils/api", () => ({
   createAuction: jest.fn(),
   getAuctions: jest.fn(),
 }));
+jest.mock('../context/AuthContext', ()=>({
+  useAuth: jest.fn(()=>({
+    checkAndRefreshToken: jest.fn()
+  }))
+}))
+
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+      route: '/',
+      pathname: '/',
+      query: {},
+      asPath: '/',
+      push: jest.fn()
+  }),
+}));
 jest.mock(
   "../components/PopupCard",
   () =>

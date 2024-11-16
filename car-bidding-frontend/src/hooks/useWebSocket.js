@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 
-const useWebSocket = (auctionId) => {
-  const router = useRouter();
+const useWebSocket = (aucId) => {
+  const auctionId = aucId || localStorage.getItem('auctionId')
   const [connectionCount, setConnectionCount] = useState(0);
   const [highestBid, setHighestBid] = useState(0);
   const [messages, setMessages] = useState([]);
@@ -16,8 +15,6 @@ const useWebSocket = (auctionId) => {
         ws.current.send(JSON.stringify({ type: "joinAuction", auctionId }));
       } else {
         console.log("AuctionId is undefined");
-        // Force refresh the page
-        router.reload();
       }
     };
 

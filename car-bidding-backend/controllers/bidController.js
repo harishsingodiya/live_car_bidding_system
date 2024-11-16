@@ -1,5 +1,5 @@
 const Bid = require("../models/bid");
-const { broadcastToAuctionRoom } = require("../services/websocketService");
+const {broadcastToAuctionRoom} = require("../services/websocketService")
 
 exports.getBidsByAuction = async (req, res) => {
   const { auctionId } = req.params;
