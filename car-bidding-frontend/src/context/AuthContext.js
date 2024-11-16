@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     setToken(data.token);
     setUser(data.userData);
     localStorage.setItem("token", data.token);
-    localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
     localStorage.setItem("user", JSON.stringify(data.userData));
   };
 
@@ -29,62 +29,64 @@ export const AuthProvider = ({ children }) => {
     router.push("/login");
   };
 
-
   // Refresh token function
-async function refreshToken() {
-  const refreshToken = localStorage.getItem('refreshToken');
+  async function refreshToken() {
+    const refreshToken = localStorage.getItem("refreshToken");
 
-  if (!refreshToken) {
-    return false;
-  }
+    if (!refreshToken) {
+      return false;
+    }
 
-  try {
-    const response = await refreshTokenApi(refreshToken);
-    const { token } = response.data;
-
-    // Update access token in localStorage
-    localStorage.setItem('token', token);
-
-    return true;
-  } catch (error) {
-    console.error('Failed to refresh token', error);
-    return false;
-  }
-}
-
-// Check if the access token is still valid and refresh it if needed
-async function checkAndRefreshToken() {
-  const token = localStorage.getItem('token');
-  
-
-  if (token) {
     try {
-      // Check if the access token is valid (you can implement token expiry check here)
-      const decoded = jwtDecode(token);
-      const currentTime = Math.floor(Date.now() / 1000);
-      
-      // If the token has expired, try refreshing it
-      if (decoded.exp < currentTime) {
-        return await refreshToken();
-      }
+      const response = await refreshTokenApi(refreshToken);
+      const { token } = response.data;
+
+      // Update access token in localStorage
+      localStorage.setItem("token", token);
+
       return true;
     } catch (error) {
+      console.error("Failed to refresh token", error);
       return false;
     }
   }
 
-  return false;
-}
+  // Check if the access token is still valid and refresh it if needed
+  async function checkAndRefreshToken() {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        // Check if the access token is valid (you can implement token expiry check here)
+        const decoded = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        // If the token has expired, try refreshing it
+        if (decoded.exp < currentTime) {
+          return await refreshToken();
+        }
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    return false;
+  }
 
   useEffect(() => {
     if (localStorage) {
-      setToken(localStorage.getItem("token"));
-      setUser(JSON.parse(localStorage.getItem("user")));
+      const accessToken = localStorage.getItem("token");
+      const userData = localStorage.getItem("user");
+      accessToken && setToken(accessToken);
+      userData && setUser(JSON.parse(userData));
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, user, checkAndRefreshToken }}>
+    <AuthContext.Provider
+      value={{ token, login, logout, user, checkAndRefreshToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
