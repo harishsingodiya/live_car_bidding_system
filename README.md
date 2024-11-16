@@ -32,3 +32,10 @@ Make sure the following dependencies are installed
 
 ## Note:
 The .env file in the server directory can be used to specify the options for MySQL database such as host, port, etc.
+
+
+## Credentials
+
+username: harish
+
+pass: 123
